@@ -1,0 +1,12 @@
+.input {
+  padding: 0.5rem;
+  width: 50%;
+  margin: auto;
+  margin-bottom: 2rem;
+}
+.form {
+  text-align: center;
+}
+.button{
+    padding: .1rem .5rem;
+}
