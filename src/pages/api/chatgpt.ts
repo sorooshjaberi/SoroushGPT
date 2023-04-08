@@ -18,29 +18,28 @@ export default async function handler(
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: chatHistory,
-      max_tokens: 500,
-      stream: true,
+      max_tokens: 250,
     });
-    log(response?.data?.choices);
+    log(response);
     res.status(200).json(response.data);
   } else {
     // const models = (await openai.listModels()).data  ;
     // res.status(200).json(models);
 
-    openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content:
-            "find your first response topic like : topic: response topic; and the rest of your response",
-        },
-      ],
-      max_tokens: 500,
-      stream: true,
-    }).then((response) => {
-      res.status(200).json(response.data);
-    });
+    openai
+      .createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: "hey",
+          },
+        ],
+        max_tokens: 500,
+      })
+      .then((response) => {
+        // res.status(200).json(response.data.choices);
+      });
     // log(response?.data?.choices);
   }
 }

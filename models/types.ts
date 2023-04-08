@@ -1,2 +1,6 @@
-import { ChatCompletionRequestMessage } from "openai";
-export type chatHistory = ChatCompletionRequestMessage[];
+import {
+  ChatCompletionRequestMessage,
+  ChatCompletionResponseMessage,
+} from "openai";
+export type messageItem = ChatCompletionRequestMessage & { id?: number };
+export type chatHistory = messageItem[];

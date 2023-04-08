@@ -106,3 +106,9 @@ a {
     color-scheme: dark;
   }
 }
+#__next{
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  align-items: stretch;
+}

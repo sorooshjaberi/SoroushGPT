@@ -4,22 +4,17 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/form.module.css";
-import {
-  FormEvent,
-  forwardRef,
-  useRef,
-  useState,
-  ForwardRefRenderFunction,
-} from "react";
+import { FormEvent, useRef, useState } from "react";
 import {
   ChatCompletionRequestMessage,
+  ChatCompletionResponseMessage,
   CreateChatCompletionResponse,
 } from "openai";
 import { chatHistory } from "models/types";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import styled from "styled-components";
-import { InputProps } from "antd";
+import { InputProps, Table, TableProps } from "antd";
 const inter = Inter({ subsets: ["latin"] });
 const SendButton = styled.button`
   padding: 1.5rem;
@@ -29,6 +24,8 @@ const SendButton = styled.button`
   cursor: pointer;
   color: #3b8484;
   font-size: 1.3rem;
+  display: block;
+  margin: 2rem auto;
 `;
 let MessageInput = styled.textarea`
   width: 50vw;
@@ -46,16 +43,30 @@ let MessageInput = styled.textarea`
     box-shadow: 0 0 10px #292929b0;
   }
 `;
-// const refForwarder: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
-//   props,
-//   ref
-// ) => <MessageInput {...props} />;
-// const newMessage = forwardRef(refForwarder);
-
+const ChatHistorySection = styled.section`
+  text-align: center;
+  margin: 2rem auto;
+  width: 100%;
+`;
 export default function Home() {
-  const [chatHistory, setChatHistory] = useState<chatHistory>([]);
-  const [result, setResult] = useState<string>("");
+  const [chatHistory, setChatHistory] = useState<chatHistory>([
+    {
+      content: "you are a helpful ai chat bot",
+      role: "system",
+    },
+  ]);
+
+  const [topic, setResult] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const pushChat = (
+    message: ChatCompletionResponseMessage | ChatCompletionRequestMessage
+  ) => {
+    setChatHistory((prev) => [...structuredClone(prev), message]);
+  };
+
+  const popChat = () => {
+    setChatHistory((perv) => perv.slice(0, perv.length - 1));
+  };
   const submitHandler = async (event: FormEvent) => {
     event.preventDefault();
     const message = inputRef.current?.value as string;
@@ -65,6 +76,7 @@ export default function Home() {
     };
     const newChatHistory = [...structuredClone(chatHistory), newChatMessage];
     console.log(newChatHistory);
+    pushChat(newChatMessage);
     if (message.length) {
       try {
         const res = await fetch("/api/chatgpt", {
@@ -73,13 +85,13 @@ export default function Home() {
         });
         const resultJson = (await res.json()) as CreateChatCompletionResponse;
         const resultText = resultJson.choices[0].message?.content;
-        setResult(resultText!);
-        setChatHistory(newChatHistory);
+        pushChat({ content: resultText!, role: "assistant" });
       } catch (err) {
-        setResult("error");
+        popChat();
       }
     }
   };
+
   return (
     <>
       <Head>
@@ -90,11 +102,32 @@ export default function Home() {
       </Head>
       <form onSubmit={submitHandler} className={`${styles.form}`}>
         <MessageInput type="text" ref={inputRef} />
-        <div style={{ marginBottom: "1rem" }} className="result">
+        {/* <div style={{ marginBottom: "1rem" }} className="result">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
-        </div>
+        </div> */}
         <SendButton>Send</SendButton>
       </form>
+      <ChatHistorySection>
+        <Table
+          style={{
+            width: "100%",
+          }}
+          dataSource={chatHistory
+            .filter((chat) => chat.role !== "system")
+            .map((chat, index) => {
+              return {
+                ...chat,
+                key: index,
+              };
+            })}
+          columns={Object.keys(chatHistory[0]).map((key) => ({
+            title: key,
+            dataIndex: key,
+            key: key,
+          }))}
+        />
+      </ChatHistorySection>
     </>
+
   );
 }
