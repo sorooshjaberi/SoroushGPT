@@ -1,8 +1,9 @@
+//@ts-nocheck
+//@ts-ignore
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/form.module.css";
-//@ts-nocheck
 import {
   FormEvent,
   forwardRef,
