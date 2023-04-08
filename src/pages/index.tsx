@@ -15,18 +15,11 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import styled from "styled-components";
 import { InputProps, Table, TableProps } from "antd";
+import MessageInputBar from "components/chat/inputBar";
+import Messages from "components/chat/messages";
+
 const inter = Inter({ subsets: ["latin"] });
-const SendButton = styled.button`
-  padding: 1.5rem;
-  outline: none;
-  border: none;
-  border-radius: 2rem;
-  cursor: pointer;
-  color: #3b8484;
-  font-size: 1.3rem;
-  display: block;
-  margin: 2rem auto;
-`;
+
 let MessageInput = styled.textarea`
   width: 50vw;
   min-width: 600px;
@@ -48,11 +41,23 @@ const ChatHistorySection = styled.section`
   margin: 2rem auto;
   width: 100%;
 `;
+const Main = styled.main`
+  height: 100vh;
+  width: 100vw;
+`;
 export default function Home() {
   const [chatHistory, setChatHistory] = useState<chatHistory>([
     {
       content: "you are a helpful ai chat bot",
       role: "system",
+    },
+    {
+      content: "you are a helpful ai chat bot",
+      role: "assistant",
+    },
+    {
+      content: "you are a helpful ai chat bot",
+      role: "user",
     },
   ]);
 
@@ -100,34 +105,36 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <form onSubmit={submitHandler} className={`${styles.form}`}>
-        <MessageInput type="text" ref={inputRef} />
-        {/* <div style={{ marginBottom: "1rem" }} className="result">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
-        </div> */}
-        <SendButton>Send</SendButton>
-      </form>
-      <ChatHistorySection>
-        <Table
-          style={{
-            width: "100%",
-          }}
-          dataSource={chatHistory
-            .filter((chat) => chat.role !== "system")
-            .map((chat, index) => {
-              return {
-                ...chat,
-                key: index,
-              };
-            })}
-          columns={Object.keys(chatHistory[0]).map((key) => ({
-            title: key,
-            dataIndex: key,
-            key: key,
-          }))}
-        />
-      </ChatHistorySection>
+      <Main
+        style={{
+          height: "100vh",
+          width: "100vw",
+          padding: "0 1rem",
+        }}
+      >
+        <ChatHistorySection>
+          {/* <Table
+            style={{
+              width: "100%",
+            }}
+            dataSource={chatHistory
+              .filter((chat) => chat.role !== "system")
+              .map((chat, index) => {
+                return {
+                  ...chat,
+                  key: index,
+                };
+              })}
+            columns={Object.keys(chatHistory[0]).map((key) => ({
+              title: key,
+              dataIndex: key,
+              key: key,
+            }))}
+          /> */}
+          <Messages messages={chatHistory} />
+        </ChatHistorySection>
+        <MessageInputBar />
+      </Main>
     </>
-
   );
 }

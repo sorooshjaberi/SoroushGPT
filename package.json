@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@next/font": "13.2.4",
     "@types/node": "18.15.11",
     "@types/react": "18.0.33",
@@ -20,6 +21,7 @@
     "openai": "^3.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.8.0",
     "react-markdown": "^8.0.6",
     "remark-gfm": "^3.0.1",
     "sass": "^1.60.0",
