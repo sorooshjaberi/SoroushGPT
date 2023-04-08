@@ -1,3 +1,5 @@
+import { log } from "console";
+import { chatHistory } from "models/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { OpenAIApi, Configuration, CreateChatCompletionResponse } from "openai";
 
@@ -6,17 +8,39 @@ const openai = new OpenAIApi(
     apiKey: process.env.API_KEY,
   })
 );
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<CreateChatCompletionResponse>
 ) {
   if (req.method === "POST") {
-    const chatHistory = JSON.parse(req.body);
+    const chatHistory: chatHistory = JSON.parse(req.body);
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: chatHistory,
-      max_tokens: 250,
+      max_tokens: 500,
+      stream: true,
     });
+    log(response?.data?.choices);
     res.status(200).json(response.data);
+  } else {
+    // const models = (await openai.listModels()).data  ;
+    // res.status(200).json(models);
+
+    openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content:
+            "find your first response topic like : topic: response topic; and the rest of your response",
+        },
+      ],
+      max_tokens: 500,
+      stream: true,
+    }).then((response) => {
+      res.status(200).json(response.data);
+    });
+    // log(response?.data?.choices);
   }
 }
