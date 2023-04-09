@@ -72,7 +72,6 @@ const Messages = (props: Props) => {
       >
         {messages}
       </div>
-      ;
     </section>
   );
 };
