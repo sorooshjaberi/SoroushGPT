@@ -28,7 +28,7 @@ export default function Home() {
   const pushChat = (
     message: ChatCompletionResponseMessage | ChatCompletionRequestMessage
   ) => {
-    console.log(chatHistory)
+    console.log(chatHistory);
     setChatHistory((prev) => [...structuredClone(prev), message]);
   };
 
@@ -42,8 +42,9 @@ export default function Home() {
       role: "user",
     };
     pushChat(newChatMessage);
+    const newChatHistory = [...structuredClone(chatHistory), newChatMessage];
     if (message.length) {
-      mutateAsync(chatHistory)
+      mutateAsync(newChatHistory)
         .then((result) => {
           const resultObject: messageItem = result.choices[0].message!;
           pushChat(resultObject);
