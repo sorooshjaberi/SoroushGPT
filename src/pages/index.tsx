@@ -1,69 +1,57 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
-import styles from "@/styles/form.module.css";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   ChatCompletionRequestMessage,
   ChatCompletionResponseMessage,
-  CreateChatCompletionResponse,
 } from "openai";
 import { chatHistory, messageItem } from "models/types";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import remarkGfm from "remark-gfm";
-import styled, { StyledComponent } from "styled-components";
 import MessageInputBar from "components/chat/inputBar";
 import Messages from "components/chat/messages";
-import QueryProvider from "reactQuery/configs";
 import { useSendMessage } from "reactQuery/useSendMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
-let Main: StyledComponent<"main", any, {}, never> | null = null;
 export default function Home() {
   const { data, mutate, mutateAsync } = useSendMessage();
   const [chatHistory, setChatHistory] = useState<chatHistory>([
+    // {
+    //   content: "you are a helpful ai chat bot",
+    //   role: "system",
+    // },
     {
-      content: "you are a helpful ai chat bot",
-      role: "system",
-    },
-    {
-      content: "Hey! How can I help you today",
+      content: "Hey!",
       role: "assistant",
     },
   ]);
-  const [topic, setResult] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const pushChat = (
     message: ChatCompletionResponseMessage | ChatCompletionRequestMessage
   ) => {
+    console.log(chatHistory)
     setChatHistory((prev) => [...structuredClone(prev), message]);
   };
 
   const popChat = () => {
     setChatHistory((perv) => perv.slice(0, perv.length - 1));
   };
-  const submitHandler = async (msg: string) => {
-    console.log(msg);
+  const submitHandler = async (msg: string, cb?: Function) => {
     const message = msg;
     const newChatMessage: ChatCompletionRequestMessage = {
       content: message,
       role: "user",
     };
-    // const newChatHistory = [...structuredClone(chatHistory), newChatMessage];
     pushChat(newChatMessage);
-    console.log("pushed");
     if (message.length) {
-      try {
-        // mutate(chatHistory);
-        mutateAsync(chatHistory).then((result) => {
+      mutateAsync(chatHistory)
+        .then((result) => {
           const resultObject: messageItem = result.choices[0].message!;
           pushChat(resultObject);
+          cb && cb();
+        })
+        .catch(() => {
+          popChat();
         });
-      } catch (err) {
-        popChat();
-      }
     }
   };
   return (

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Input, FloatButton } from "antd";
 import { FaPaperPlane } from "react-icons/fa";
 const textAreaStyles: React.CSSProperties = {
@@ -12,16 +12,21 @@ const textAreaStyles: React.CSSProperties = {
 };
 
 interface Props {
-  sendMessage: (str: string) => any;
+  sendMessage: (str: string, cb?: Function) => any;
 }
 
 const MessageInputBar = (props: Props) => {
+  const [textareaValue, setTextareaValue] = useState<string>("");
+
   const messageTextRef = useRef<any>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const send = (event: any) => {
     const value = messageTextRef.current.resizableTextArea.textArea.value;
     if (value) {
-      props.sendMessage(value);
+      props.sendMessage(value, () => {
+        setTextareaValue("");
+      });
     }
   };
 
@@ -54,6 +59,7 @@ const MessageInputBar = (props: Props) => {
           minHeight: "20px",
           position: "relative",
         }}
+        ref={formRef}
         onSubmit={(event) => {
           event.preventDefault();
           if (messageTextRef?.current?.value!) {
@@ -67,7 +73,12 @@ const MessageInputBar = (props: Props) => {
           style={textAreaStyles}
           autoSize
           ref={messageTextRef}
-        ></Input.TextArea>
+          value={textareaValue}
+          onInput={(event) => {
+            const target = event.target as HTMLTextAreaElement;
+            setTextareaValue(target.value);
+          }}
+        />
 
         <button type="submit"></button>
         {sendButton}
