@@ -109,3 +109,14 @@ a {
 body {
   padding: 0;
 }
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
+#__next {
+  flex: 1 1 auto;
+}
+#chatsContainer::-webkit-scrollbar {
+  width: 8px;
+}

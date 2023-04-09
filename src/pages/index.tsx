@@ -1,68 +1,40 @@
-//@ts-nocheck
-//@ts-ignore
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/form.module.css";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   ChatCompletionRequestMessage,
   ChatCompletionResponseMessage,
   CreateChatCompletionResponse,
 } from "openai";
-import { chatHistory } from "models/types";
+import { chatHistory, messageItem } from "models/types";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
-import styled from "styled-components";
-import { InputProps, Table, TableProps } from "antd";
+import styled, { StyledComponent } from "styled-components";
 import MessageInputBar from "components/chat/inputBar";
 import Messages from "components/chat/messages";
+import QueryProvider from "reactQuery/configs";
+import { useSendMessage } from "reactQuery/useSendMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
-let MessageInput = styled.textarea`
-  width: 50vw;
-  min-width: 600px;
-  padding: 2rem 1rem;
-  height: 100px;
-  outline: none;
-  border: none;
-  border-radius: 5px;
-  transition: all.2s ease;
-  box-shadow: 0 0 4px #00000045;
-  &:focus {
-    outline: none;
-    border: none;
-    box-shadow: 0 0 10px #292929b0;
-  }
-`;
-const ChatHistorySection = styled.section`
-  text-align: center;
-  margin: 2rem auto;
-  width: 100%;
-`;
-const Main = styled.main`
-  height: 100vh;
-  width: 100vw;
-`;
+let Main: StyledComponent<"main", any, {}, never> | null = null;
 export default function Home() {
+  const { data, mutate, mutateAsync } = useSendMessage();
   const [chatHistory, setChatHistory] = useState<chatHistory>([
     {
       content: "you are a helpful ai chat bot",
       role: "system",
     },
     {
-      content: "you are a helpful ai chat bot",
+      content: "Hey! How can I help you today",
       role: "assistant",
     },
-    {
-      content: "you are a helpful ai chat bot",
-      role: "user",
-    },
   ]);
-
   const [topic, setResult] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+
   const pushChat = (
     message: ChatCompletionResponseMessage | ChatCompletionRequestMessage
   ) => {
@@ -72,31 +44,28 @@ export default function Home() {
   const popChat = () => {
     setChatHistory((perv) => perv.slice(0, perv.length - 1));
   };
-  const submitHandler = async (event: FormEvent) => {
-    event.preventDefault();
-    const message = inputRef.current?.value as string;
+  const submitHandler = async (msg: string) => {
+    console.log(msg);
+    const message = msg;
     const newChatMessage: ChatCompletionRequestMessage = {
       content: message,
       role: "user",
     };
-    const newChatHistory = [...structuredClone(chatHistory), newChatMessage];
-    console.log(newChatHistory);
+    // const newChatHistory = [...structuredClone(chatHistory), newChatMessage];
     pushChat(newChatMessage);
+    console.log("pushed");
     if (message.length) {
       try {
-        const res = await fetch("/api/chatgpt", {
-          method: "POST",
-          body: JSON.stringify(newChatHistory),
+        // mutate(chatHistory);
+        mutateAsync(chatHistory).then((result) => {
+          const resultObject: messageItem = result.choices[0].message!;
+          pushChat(resultObject);
         });
-        const resultJson = (await res.json()) as CreateChatCompletionResponse;
-        const resultText = resultJson.choices[0].message?.content;
-        pushChat({ content: resultText!, role: "assistant" });
       } catch (err) {
         popChat();
       }
     }
   };
-
   return (
     <>
       <Head>
@@ -105,36 +74,16 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Main
+      <main
         style={{
           height: "100vh",
           width: "100vw",
           padding: "0 1rem",
         }}
       >
-        <ChatHistorySection>
-          {/* <Table
-            style={{
-              width: "100%",
-            }}
-            dataSource={chatHistory
-              .filter((chat) => chat.role !== "system")
-              .map((chat, index) => {
-                return {
-                  ...chat,
-                  key: index,
-                };
-              })}
-            columns={Object.keys(chatHistory[0]).map((key) => ({
-              title: key,
-              dataIndex: key,
-              key: key,
-            }))}
-          /> */}
-          <Messages messages={chatHistory} />
-        </ChatHistorySection>
-        <MessageInputBar />
-      </Main>
+        <Messages messages={chatHistory} />
+        <MessageInputBar sendMessage={submitHandler} />
+      </main>
     </>
   );
 }
