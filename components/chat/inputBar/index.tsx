@@ -55,7 +55,7 @@ const MessageInputBar = (props: Props) => {
     >
       <form
         style={{
-          width: "90vw",
+          width: "calc(100vw - 2rem)",
           minHeight: "20px",
           position: "relative",
         }}

@@ -20,7 +20,7 @@ export default function Home() {
         style={{
           height: "100vh",
           width: "100vw",
-          padding: "0 1rem",
+          padding: "0 5px",
         }}
       >
         <Messages messages={chatHistory} />

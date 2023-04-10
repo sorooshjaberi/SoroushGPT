@@ -25,18 +25,19 @@ const userMessageStyle = (
     borderRadius:
       isUser === "assistant" ? "1rem 1rem 0 1rem" : "1rem 1rem 1rem 0",
     maxWidth: "90%",
-    margin: "8px 2px",
+    margin: "8px 0",
   };
 };
 const messagesContainerStyles: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "start",
-  padding: "1rem 2rem",
+  padding: "10px 0",
   textAlign: "start",
   height: "100%",
   overflowY: "scroll",
   overflowX: "hidden",
+  // margin:"-7px"
 };
 const ChatSectionStyles: React.CSSProperties = {
   textAlign: "center",
