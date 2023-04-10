@@ -120,3 +120,11 @@ body {
 #chatsContainer::-webkit-scrollbar {
   width: 8px;
 }
+@font-face {
+  font-family: vazir;
+  src: url(/vazir/Vazir.ttf);
+}
+html{
+  font-family: vazir;
+background-color: #444;
+}

@@ -9,6 +9,7 @@ const textAreaStyles: React.CSSProperties = {
   position: "absolute",
   bottom: "-28px",
   zIndex: "1",
+  backgroundColor: "rgb(232 232 232)",
 };
 
 interface Props {
@@ -22,9 +23,8 @@ const MessageInputBar = (props: Props) => {
   const formRef = useRef<HTMLFormElement>(null);
 
   const send = (event: any) => {
-    const value = messageTextRef.current.resizableTextArea.textArea.value;
-    if (value) {
-      props.sendMessage(value, () => {
+    if (textareaValue) {
+      props.sendMessage(textareaValue, () => {
         setTextareaValue("");
       });
     }
@@ -36,7 +36,7 @@ const MessageInputBar = (props: Props) => {
       type="primary"
       style={{
         position: "absolute",
-        top: " 5px",
+        top: "9px",
         right: " 12px",
         scale: ".8",
       }}
@@ -60,15 +60,9 @@ const MessageInputBar = (props: Props) => {
           position: "relative",
         }}
         ref={formRef}
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (messageTextRef?.current?.value!) {
-            props.sendMessage(messageTextRef.current.value);
-          }
-        }}
       >
         <Input.TextArea
-          placeholder="input search text"
+          placeholder="Message..."
           size="large"
           style={textAreaStyles}
           autoSize
@@ -77,6 +71,12 @@ const MessageInputBar = (props: Props) => {
           onInput={(event) => {
             const target = event.target as HTMLTextAreaElement;
             setTextareaValue(target.value);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              textareaValue.length > 0 && send(textareaValue);
+            }
           }}
         />
 

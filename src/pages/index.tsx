@@ -1,60 +1,13 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
-import { useRef, useState } from "react";
-import {
-  ChatCompletionRequestMessage,
-  ChatCompletionResponseMessage,
-} from "openai";
-import { chatHistory, messageItem } from "models/types";
 import MessageInputBar from "components/chat/inputBar";
 import Messages from "components/chat/messages";
-import { useSendMessage } from "reactQuery/useSendMessage";
+import useMessage from "reactQuery/useSendMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { data, mutate, mutateAsync } = useSendMessage();
-  const [chatHistory, setChatHistory] = useState<chatHistory>([
-    // {
-    //   content: "you are a helpful ai chat bot",
-    //   role: "system",
-    // },
-    {
-      content: "Hey!",
-      role: "assistant",
-    },
-  ]);
-
-  const pushChat = (
-    message: ChatCompletionResponseMessage | ChatCompletionRequestMessage
-  ) => {
-    console.log(chatHistory);
-    setChatHistory((prev) => [...structuredClone(prev), message]);
-  };
-
-  const popChat = () => {
-    setChatHistory((perv) => perv.slice(0, perv.length - 1));
-  };
-  const submitHandler = async (msg: string, cb?: Function) => {
-    const message = msg;
-    const newChatMessage: ChatCompletionRequestMessage = {
-      content: message,
-      role: "user",
-    };
-    pushChat(newChatMessage);
-    const newChatHistory = [...structuredClone(chatHistory), newChatMessage];
-    if (message.length) {
-      mutateAsync(newChatHistory)
-        .then((result) => {
-          const resultObject: messageItem = result.choices[0].message!;
-          pushChat(resultObject);
-          cb && cb();
-        })
-        .catch(() => {
-          popChat();
-        });
-    }
-  };
+  const { chatHistory, sendUserMessage } = useMessage();
   return (
     <>
       <Head>
@@ -71,7 +24,7 @@ export default function Home() {
         }}
       >
         <Messages messages={chatHistory} />
-        <MessageInputBar sendMessage={submitHandler} />
+        <MessageInputBar sendMessage={sendUserMessage} />
       </main>
     </>
   );
