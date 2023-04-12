@@ -4,7 +4,7 @@ import {
   CreateChatCompletionResponse,
 } from "openai";
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 const sendMessage = async (
   chatHistory: chatHistory
 ): Promise<CreateChatCompletionResponse> => {
@@ -20,18 +20,28 @@ export function useSendMessage() {
   return mutation;
 }
 export default function useMessage() {
+  const queryClient = useQueryClient();
   const [chatHistory, setChatHistory] = useState<chatHistory>([
     // {
     //   content: "you are a helpful ai chat bot",
     //   role: "system",
     // },
     {
-      content: "Hey!",
+      content: "سلام",
       role: "assistant",
     },
   ]);
   const mutation = useMutation(["sendMessage"], sendMessage, {
     retry: 3,
+    onMutate: async function (chatHistory){
+      return chatHistory.slice(0  , chatHistory.length -1)
+    },
+    onSuccess(data, variables, context) {
+      queryClient.setQueryData('chatHistory' , [...variables , data])
+    },
+    onError(error, variables, context) {
+      
+    },
   });
   const { mutateAsync } = mutation;
 

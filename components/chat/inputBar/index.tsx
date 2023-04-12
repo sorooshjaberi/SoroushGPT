@@ -10,7 +10,7 @@ const textAreaStyles: React.CSSProperties = {
   bottom: "-28px",
   zIndex: "1",
   backgroundColor: "rgb(232 232 232)",
-  fontFamily:"vazir"
+  fontFamily: "vazir",
 };
 
 interface Props {
@@ -30,7 +30,7 @@ const MessageInputBar = (props: Props) => {
       });
     }
   };
-  
+
   const sendButton = (
     <FloatButton
       icon={<FaPaperPlane />}
@@ -45,46 +45,37 @@ const MessageInputBar = (props: Props) => {
     />
   );
   return (
-    <div
+    <form
       style={{
-        position: "absolute",
-        left: "50%",
-        translate: "-50% 0 ",
-        bottom: "5rem",
-        margin: "auto",
+        width: "calc(100vw - 2rem)",
+        minHeight: "20px",
+        position: "relative",
+        top:"-50px"
       }}
+      ref={formRef}
     >
-      <form
-        style={{
-          width: "calc(100vw - 2rem)",
-          minHeight: "20px",
-          position: "relative",
+      <Input.TextArea
+        placeholder="Message..."
+        size="large"
+        style={textAreaStyles}
+        autoSize
+        ref={messageTextRef}
+        value={textareaValue}
+        onInput={(event) => {
+          const target = event.target as HTMLTextAreaElement;
+          setTextareaValue(target.value);
         }}
-        ref={formRef}
-      >
-        <Input.TextArea
-          placeholder="Message..."
-          size="large"
-          style={textAreaStyles}
-          autoSize
-          ref={messageTextRef}
-          value={textareaValue}
-          onInput={(event) => {
-            const target = event.target as HTMLTextAreaElement;
-            setTextareaValue(target.value);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
-              event.preventDefault();
-              textareaValue.length > 0 && send(textareaValue);
-            }
-          }}
-        />
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            textareaValue.length > 0 && send(textareaValue);
+          }
+        }}
+      />
 
-        <button type="submit"></button>
-        {sendButton}
-      </form>
-    </div>
+      <button type="submit"></button>
+      {sendButton}
+    </form>
   );
 };
 

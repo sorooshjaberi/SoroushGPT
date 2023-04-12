@@ -36,10 +36,9 @@ const messagesContainerStyles: React.CSSProperties = {
 };
 const ChatSectionStyles: React.CSSProperties = {
   textAlign: "center",
-  margin: "2rem auto",
   marginTop: 0,
   width: "100%",
-  height: "85vh",
+  height: "90%",
 };
 const Messages = (props: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);

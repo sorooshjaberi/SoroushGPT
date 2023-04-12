@@ -2,7 +2,7 @@ import Head from "next/head";
 import { Inter } from "@next/font/google";
 import MessageInputBar from "components/chat/inputBar";
 import Messages from "components/chat/messages";
-import useMessage from "reactQuery/useSendMessage";
+import useMessage from "reactQuery/useMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +21,12 @@ export default function Home() {
           height: "100vh",
           width: "100vw",
           padding: "0 5px",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection:"column",
+          alignItems:"center",
+          justifyContent:"space-between"
         }}
       >
         <Messages messages={chatHistory} />
