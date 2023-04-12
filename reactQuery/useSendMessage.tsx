@@ -30,7 +30,9 @@ export default function useMessage() {
       role: "assistant",
     },
   ]);
-  const mutation = useMutation(sendMessage);
+  const mutation = useMutation(["sendMessage"], sendMessage, {
+    retry: 3,
+  });
   const { mutateAsync } = mutation;
 
   const pushChat = (message: messageItem) => {
@@ -49,8 +51,7 @@ export default function useMessage() {
     if (msg.length) {
       mutateAsync([...chatHistory, newChatMessage])
         .then((result) => {
-          const resultObject: messageItem = result.choices[0].message!;
-          pushChat(resultObject);
+          pushChat(result.choices[0].message!);
           cb && cb();
         })
         .catch(() => {

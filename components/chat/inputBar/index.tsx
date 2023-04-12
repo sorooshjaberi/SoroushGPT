@@ -10,6 +10,7 @@ const textAreaStyles: React.CSSProperties = {
   bottom: "-28px",
   zIndex: "1",
   backgroundColor: "rgb(232 232 232)",
+  fontFamily:"vazir"
 };
 
 interface Props {
@@ -29,7 +30,7 @@ const MessageInputBar = (props: Props) => {
       });
     }
   };
-
+  
   const sendButton = (
     <FloatButton
       icon={<FaPaperPlane />}
@@ -73,7 +74,7 @@ const MessageInputBar = (props: Props) => {
             setTextareaValue(target.value);
           }}
           onKeyDown={(event) => {
-            if (event.key === "Enter") {
+            if (event.key === "Enter" && !event.shiftKey) {
               event.preventDefault();
               textareaValue.length > 0 && send(textareaValue);
             }

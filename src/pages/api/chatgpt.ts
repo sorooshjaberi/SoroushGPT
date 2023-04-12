@@ -35,7 +35,7 @@ export default async function handler(
             content: "hey",
           },
         ],
-        max_tokens: 500,
+        max_tokens:500,
       })
       .then((response) => {
         // res.status(200).json(response.data.choices);

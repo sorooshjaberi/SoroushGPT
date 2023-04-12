@@ -128,3 +128,17 @@ html{
   font-family: vazir;
 background-color: #444;
 }
+:lang(ar) { /* Arabic */
+  text-align: right;
+  unicode-bidi: bidi-override;
+}
+
+:lang(he) { /* Hebrew */
+  text-align: right ;
+  unicode-bidi: bidi-override;
+}
+
+:lang(fa) { /* Persian/Farsi */
+  text-align: right !important;
+  unicode-bidi: bidi-override;
+}
