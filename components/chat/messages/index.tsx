@@ -45,7 +45,7 @@ const Messages = (props: Props) => {
   const messages = props.messages.map((message, index) => {
     if (message.role !== "system") {
       return (
-        <div style={userMessageStyle(message.role)} key={index}>
+        <div dir="rtl" style={userMessageStyle(message.role)} key={index}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {message.content}
           </ReactMarkdown>
