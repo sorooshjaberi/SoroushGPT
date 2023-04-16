@@ -18,7 +18,7 @@ export default async function handler(
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: chatHistory,
-      max_tokens: 250,
+      max_tokens: 1000,
     });
     log(response);
     res.status(200).json(response.data);
@@ -35,7 +35,7 @@ export default async function handler(
             content: "hey",
           },
         ],
-        max_tokens:500,
+        max_tokens:2000,
       })
       .then((response) => {
         // res.status(200).json(response.data.choices);
