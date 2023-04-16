@@ -3,7 +3,7 @@ import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { useEffect, useRef } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
-
+import styles from './style.module.css'
 type Props = {
   messages: chatHistory;
 };
@@ -13,9 +13,9 @@ const userMessageStyle = (
 ): React.CSSProperties => {
   return {
     alignSelf: isUser === "assistant" ? "end" : "start",
-    background: isUser === "assistant" ? "#bdbdbd" : "#5e95e8",
+    background: isUser === "assistant" ? "#bdbdbd" : "#9435f6",
+    color: isUser === "assistant" ? "#000000" : "#ffffff",
     textAlign: "start",
-    // textAlign: isUser === "user" ? "start" : "end",
     padding: ".5rem 1rem",
     borderRadius:
       isUser === "assistant" ? "1rem 1rem 0 1rem" : "1rem 1rem 1rem 0",
@@ -45,7 +45,12 @@ const Messages = (props: Props) => {
   const messages = props.messages.map((message, index) => {
     if (message.role !== "system") {
       return (
-        <div dir="rtl" style={userMessageStyle(message.role)} key={index}>
+        <div
+          dir="rtl"
+          className={styles['messageItem']}
+          style={userMessageStyle(message.role)}
+          key={index}
+        >
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {message.content}
           </ReactMarkdown>

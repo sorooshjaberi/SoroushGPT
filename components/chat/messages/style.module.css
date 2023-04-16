@@ -1,0 +1,11 @@
+.messageItem pre , .messageItem code {
+    direction: ltr;
+    margin: 5px ;
+    border-radius: 3px;
+    padding: 1px;
+    background-color: #222;
+    color: #eee;
+}
+.messageItem pre{
+    padding: 1rem 2rem;
+}
