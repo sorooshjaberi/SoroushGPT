@@ -32,7 +32,7 @@ export default function useMessage() {
     },
   ]);
   const mutation = useMutation(["sendMessage"], sendMessage, {
-    retry: 3,
+    retry: true,
     onMutate: async function (chatHistory){
       return chatHistory.slice(0  , chatHistory.length -1)
     },
