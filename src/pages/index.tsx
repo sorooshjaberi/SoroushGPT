@@ -3,6 +3,7 @@ import { Inter } from "@next/font/google";
 import MessageInputBar from "components/chat/inputBar";
 import Messages from "components/chat/messages";
 import useMessage from "reactQuery/useMessage";
+import { useReactPWAInstall } from "react-pwa-install";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,9 +25,9 @@ export default function Home() {
           position: "relative",
           overflow: "hidden",
           display: "flex",
-          flexDirection:"column",
-          alignItems:"center",
-          justifyContent:"space-between"
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         <Messages messages={chatHistory} />
