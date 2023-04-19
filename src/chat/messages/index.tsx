@@ -1,4 +1,4 @@
-import { chatHistory } from "models/types";
+import { chatHistory } from "@/models/types";
 import { ChatCompletionRequestMessageRoleEnum } from "openai";
 import { useEffect, useRef } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";

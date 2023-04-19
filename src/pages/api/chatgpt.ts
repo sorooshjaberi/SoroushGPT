@@ -1,5 +1,5 @@
 import { log } from "console";
-import { chatHistory } from "models/types";
+import { chatHistory } from "@/models/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { OpenAIApi, Configuration, CreateChatCompletionResponse } from "openai";
 

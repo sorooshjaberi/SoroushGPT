@@ -1,4 +1,4 @@
-import { chatHistory, messageItem } from "models/types";
+import { chatHistory, messageItem } from "@/models/types";
 import {
   ChatCompletionRequestMessage,
   CreateChatCompletionResponse,

@@ -1,13 +1,30 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
-import MessageInputBar from "components/chat/inputBar";
-import Messages from "components/chat/messages";
-import useMessage from "reactQuery/useMessage";
-import { useReactPWAInstall } from "react-pwa-install";
-
+import MessageInputBar from "@/chat/inputBar";
+import Messages from "@/chat/messages";
+import useMessage from "@/reactQuery/useMessage";
+import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 const inter = Inter({ subsets: ["latin"] });
-
-export default function Home() {
+export const getServerSideProps: GetServerSideProps<any> = async (ctx) => {
+  if (ctx.resolvedUrl && ctx.locale) {
+    return {
+      props: {
+        ...(await serverSideTranslations(ctx.locale, ["common"])),
+      },
+    };
+  } else {
+    return {
+      props: {
+        data: "nothing yet",
+      },
+    };
+  }
+};
+export default function Home(props: any) {
+  const { t } = useTranslation();
+  console.log(props.data);
   const { chatHistory, sendUserMessage } = useMessage();
   return (
     <>
@@ -30,6 +47,7 @@ export default function Home() {
           justifyContent: "space-between",
         }}
       >
+        {t(`common:greet`)}
         <Messages messages={chatHistory} />
         <MessageInputBar sendMessage={sendUserMessage} />
       </main>
